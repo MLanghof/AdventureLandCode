@@ -1,0 +1,175 @@
+
+function use_hp_or_mp_fixed()
+{
+    if(safeties && mssince(last_potion)<min(200,character.ping*3)) return;
+    var used=false;
+	// On cooldown?
+    if(new Date()<parent.next_skill.use_hp) return;
+	// In dire need of mana?
+    if(character.mp/character.max_mp<0.2) use('use_mp'),used=true; 
+	// Potion use justified?
+    else if(character.hp/character.max_hp<0.8) use('use_hp'),used=true;
+    else if(character.mp/character.max_mp<0.7) use('use_mp'),used=true;
+	// Anything to regen without wasting?
+	// Prefer MP as HP is less effective.
+    else if(character.mp<character.max_mp - 100) use('regen_mp'),used=true;
+    else if(character.hp<character.max_hp - 50) use('regen_hp'),used=true;
+	// Anything to regen at all?
+    else if(character.hp<character.max_hp) use('regen_hp'),used=true;
+    else if(character.mp<character.max_mp) use('regen_mp'),used=true;
+    if(used) last_potion=new Date();
+}
+
+
+function in_town(entity)
+{
+	if (entity.map === "main")
+	{
+		if (entity.x < -600) return false;
+		if (entity.x > 360) return false;
+		if (entity.y < -909) return false;
+		if (entity.y > 530) return false;
+		return true;
+	}
+	return false;
+}
+
+
+
+
+
+
+// Hey there!
+// This is CODE, lets you control your character with code.
+// If you don't know how to code, don't worry, It's easy.
+// Just set attack_mode to true and ENGAGE!
+
+var attack_mode=true;
+var move_to_engage = true;
+
+load_code(2);
+
+setInterval(function(){
+	
+	use_hp_or_mp_fixed();
+	loot();
+
+	if(!attack_mode || character.rip) return;
+	if(is_moving(character) || is_transporting(character)) return;
+	if(in_town(character)) return;
+
+	var target=get_targeted_monster();
+	if(!target)
+	{
+		target=get_nearest_monster({min_xp:100,max_att:330});
+		if(target) change_target(target);
+		else
+		{
+			set_message("No Monsters");
+			return;
+		}
+	}
+	
+	if(!is_in_range(target))
+	{
+		if (!move_to_engage) return;
+		move(
+			character.x+(target.x-character.x)*0.13,
+			character.y+(target.y-character.y)*0.13
+			);
+		// Walk half the distance
+	}
+	else if(can_attack(target))
+	{
+		set_message("Attacking");
+		attack(target);
+		//move(character.x, character.y - 0);
+	}
+
+},1000/16 + 5);
+
+// Learn Javascript: https://www.codecademy.com/learn/introduction-to-javascript
+// Write your own CODE: https://github.com/kaansoral/adventureland
+
+
+
+
+
+
+load_code(2);
+
+setInterval(function(){
+	use_hp_or_mp_fixed();
+},1000/10); // Loops every 1/8 seconds.
+
+var i = 0;
+
+setInterval(function(){
+	i = (i+1) % 40;
+	if (is_moving(character)) return;
+	switch (i)
+	{
+		case 1: move(character.x-0.00001, character.y); break;
+		case 4: move(character.x, character.y+0.00001); break;
+		case 15: move(character.x+0.00001, character.y); break;
+		case 21: move(character.x, character.y+0.00001); break;
+		default: break;
+	}
+},1000/2);
+
+
+
+
+let phi = 0;
+let radius = 40;
+setInterval(function() {
+	let bean = 0;
+	for(id in parent.entities)
+	{
+		var current=parent.entities[id];
+		if (current.name == "MoneyS") {
+			bean = current;
+			break;
+		}
+	}
+	
+	move(bean.x + radius * Math.cos(phi), bean.y + radius * Math.sin(phi));
+	phi -= 0.35;
+}, 200);
+
+
+
+let iD = [];
+let toggle = false;
+function d(name){
+    let boo = true;
+    for(let i in iD){
+        if(name===iD[i]){
+            boo=false;
+            break;
+        };
+    };
+    if(boo) iD.push(name);
+    return boo;
+};
+setInterval(function(){iD=[];},2000);
+function p(){
+    let player = null;
+    for(let id in parent.entities){
+        let current = parent.entities[id];
+        if(current.type!=="character") continue;
+        if(d(current.id)) {
+            player = current;
+			break;
+        };
+    };
+	if (player)
+		if (toggle)
+			send_gold(player.name,206);
+		else
+			if (parent.distance(character,player) < 320)
+				use_skill("mluck", player);
+	toggle = !toggle;
+};
+//setInterval(function(){p()}, 100)
+

@@ -1,0 +1,191 @@
+game.on("death",function(data){
+	game_log(JSON.stringify(game.entities[data.id.toString()]));
+});
+game.on("death",function(data){
+	var entity = parent.entities[data.id];
+	if (entity.type === "monster" && entity.mtype === "frog")
+		game_log("Frog died!");
+	//if (entity.type === "monster" && entity.mtype === "croc")
+	//	game_log("Croc died!");
+});
+
+parent.electron_dev_tools();
+
+document.getElementById("maincode")
+document.getElementById("maincode").contentWindow.parent.character
+Object.entries(document.getElementById("maincode").contentWindow.parent.G.items).filter(a => console.log(a[0]));
+
+m = document.getElementById("maincode").contentWindow.parent.G.monsters
+
+document.getElementById("maincode").contentWindow.parent.G.monsters.snake
+//Object.entries(m).sort((m0, m1) => m0.xp / m0.max_hp < m1.xp / m1.max_hp)
+m.sort((m0, m1) => m0[1].xp / m0[1].hp - m1[1].xp / m1[1].hp)
+
+```m = document.getElementById("maincode").contentWindow.parent.G.monsters
+Object.entries(m).filter(m0 => m0[1].xp / ceil(m0[1].hp / 465) >= 960 / 2 && m0[1].hp > 440 && m0[1].attack * m0[1].frequency < 250 && m0[1].hp < 5000 && !m0[1].special)```
+
+// Bees south: 294, 1484
+// Snakes north: 347, -747
+
+// Bees
+use_skill('blink', [294, 1484]);
+// Froggies
+use_skill("blink", [-994, 1284]);
+smart_move(294, 1484);
+0 1440
+
+map_key("B","snippet","use_skill('blink', [294, 1484])");
+map_key("F","snippet","use_skill('blink', [-1094, 1340])");
+map_key("O","snippet","use_skill('blink', [1600, -500])");
+
+"vision" range is 670
+
+// Phoenix at scropions
+1332 -157
+
+
+// entrance to spooky forest
+use_skill("blink", [1600, -500]);
+1600, 500 is entrance to spooky
+1200, 70 is other side
+
+Wishlist:
+- code loading that works
+- Mob priorization
+- Traveling salesman farming leveled up mobs
+- Avoid Jr
+- UI for
+  - points of interest
+  - code toggle
+  - variable toggles
+
+const {webFrame} = require('electron')
+webFrame.setZoomFactor(0.5);
+
+require('electron').setZoomFactor(0.5);
+
+number_e = Code* -> German
+Rising = Rising*
+super = *S (bday)
+welcome = nerd
+Crown = CrownMerch
+Circusfire = *fire
+NexusNull = ? -> German
+Generol = ? -> German
+gantit = Comer
+SpadarFaar = Foaly
+earthiverse = eart* (?)
+Beg = VanHalen
+
+(\[.*\]).*= 3;.*\n(.*= 3; my attack = 610.*\n)+(\[.*\]).*\n
+Start: \1 ### Scared: \3\n
+
+send_local_cm
+
+
+(\d\d\.\d\d)% vs\. \1
+
+
+    const removeLogWith = [
+      " killed an ",
+      " killed a ",
+      "Get closer",
+      "Do nothing.",
+      "You can't buy, trade or upgrade in the bank"
+    ];
+
+    setInterval(() => {
+      const self = this;
+      parent.$(".gameentry").each(function(index) {
+        const item = $(this);
+
+        for (let i = 0; i < removeLogWith.length; i++) {
+          const text = removeLogWith[i];
+          if (item.text().indexOf(text) !== -1) {
+            item.fadeOut(3000, () => {
+              item.remove();
+            });
+            break;
+          }
+        }
+      });
+    }, 3100);
+
+
+
+G.quests
+{leather: {…}, lostearring: {…}, seashell: {…}, cx: {…}, gemfragment: {…}, …}
+leather: {map: "winterland", in: "winterland", x: 144, y: -47, id: "leathermerchant"}
+lostearring: {map: "mansion", in: "mansion", x: 0, y: -303, id: "pwincess"}
+seashell: {map: "main", in: "main", x: -1572, y: 552, id: "fisherman"}
+cx: {map: "main", in: "main", x: -361, y: -832, id: "appearance"}
+gemfragment: {map: "tunnel", in: "tunnel", x: -264, y: -96, id: "gemmerchant"}
+glitch:
+map: "woffice"
+in: "woffice"
+x: 32
+y: -178
+id: "wnpc"
+__proto__: Object
+__proto__: Object
+
+
+[3:29 AM] super: I don't wanna spoil the fun but the method I am using knows exactly where phoenix spawns when it spawns (x, y, and map)
+[3:30 AM] MauranKilom: interesting, that's a nice riddle for another day
+[3:30 AM] MauranKilom: (however I did beat you to one of them already and killed it without you arriving, so something isn't exactly right there I believe)
+[3:31 AM] super: I have been turning it off and on and the method requires me to go to all the spawns once before I can detect them
+[3:34 AM] super: I reloaded the code :smile: :smile:
+[3:34 AM] super: It had to go blink to the spawns again
+
+does it involve blinking to the corpse or smth?
+
+Investigate G.maps
+
+
+function bleargh()
+{
+  var b = "";
+  b += "<div style='background-color: black; border: 5px solid gray; padding: 14px; font-size: 24px; display: inline-block; max-width: 640px'>";
+  b += "<div style='padding: 10px; color: #CC863B; text-align: center'>Work in Progress</div>";
+  "ranger rogue warrior mage priest paladin merchant".split(" ").forEach(function(a) {
+    b += "<div>" + a.toTitleCase() + "</div>";
+    parent.object_sort(G.skills).forEach(function(c) {
+      let ident = c[0];
+      c = c[1];
+      c["class"] && c["class"].includes(a) && (b += parent.item_container({
+        skin: c.skin,
+        onclick: bloop_test(ident)
+      }))
+    })
+  });
+  b += "<div>Item Skills</div>";
+  parent.object_sort(G.skills).forEach(function(a) {
+    let ident = a[0];
+    a = a[1];
+    a.slot && (b += parent.item_container({
+      skin: a.skin,
+      onclick: bloop_test(ident)
+    }))
+  });
+  b += "<div>Abilities and Utilities</div>";
+  parent.object_sort(G.skills).forEach(function(a) {
+    let ident = a[0];
+    a = a[1];
+    if ("ability" == a.type || "utility" == a.type) b += parent.item_container({
+      skin: a.skin,
+      onclick: bloop_test(ident)
+    })
+  });
+  b += "</div>";
+  parent.show_modal(b, {
+    wrap: !1,
+    hideinbackground: !0,
+    url: "/docs/guide/all/skills_and_conditions"
+  })
+}
+
+function bloop_test(skill)
+{
+  return "show_modal('<div id=\\'al_skill_preview\\' style=\\'width: 480px\\'></div>', {wrap: !1,hideinbackground: !0,});render_skill('#al_skill_preview', '"+skill+"');"
+}
+[6:41 AM] number_e: just call bleargh() and you should have a nice modal with all the skills listed and clickable
