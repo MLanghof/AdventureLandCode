@@ -11,6 +11,7 @@ load_local_code("General.js");
 load_local_code("Data.js");
 load_local_code("Towns.js");
 load_local_code("Upgrading.js");
+load_local_code("Events.js");
 
 game_log("Finished code loading!");
 
@@ -18,6 +19,7 @@ game_log("Finished code loading!");
 // Regenerate resources.
 setInterval(function () {
     use_hp_or_mp_fixed();
+    loot();
 }, 1000 / 10);
 
 
@@ -47,6 +49,10 @@ setInterval(function () {
 
 // Merchant's luck logic.
 setInterval(function () {
+    // Probably chickens?
+    if (character.mp < 0.5 * character.max_mp)
+        return;
+
     let targets = Object.values(parent.entities).filter(entity => is_character(entity) && parent.distance(character, entity) < 320);
 
     for (current of targets){
@@ -80,3 +86,41 @@ setInterval(function () {
         use_skill("mluck", sorted_targets[0]);
 }, 1000 / 2);
 
+
+
+// Danger below!
+
+let sell_whitelist = [
+    "hpamulet",
+    "hpbelt",
+    "vitearring",
+    "slimestaff",
+    "mushroomstaff"
+];
+
+
+setInterval(function () {
+    if (!in_town(character))
+        return;
+
+    for (let nameToSell of sell_whitelist)
+	    for (let index in character.items)
+        {
+            let item = character.items[index];
+            if (!item)
+                continue;
+            // Only automatically sell lvl 0 items!
+            if (item.level && item.level > 0)
+                continue;
+		    if(item.name === nameToSell)
+                sell(index);
+        }
+}, 500);
+
+
+/*
+setInterval(function () {
+    if (character.map == "cyberland")
+        parent.socket.emit("eval", { command: "stop" })
+}, 100)
+*/

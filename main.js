@@ -12,65 +12,110 @@ load_local_code("Data.js");
 load_local_code("General.js");
 load_local_code("Towns.js");
 load_local_code("Upgrading.js");
+load_local_code("Events.js");
+load_local_code("PhoenixChase.js");
+load_local_code("UI.js");
 
-
+flog("Code loaded.")
 
 game_log("Finished code loading!");
 
 
-function get_nearest_monster_new(args)
-{
-	//args:
-	// max_att - max attack
-	// min_xp - min XP
-	// target: Only return monsters that target this "name" or player object
-	// no_target: Only pick monsters that don't have any target
-	// exclusive_target: Only pick monsters with target different from own character
-	// path_check: Checks if the character can move to the target
-	// type: Type of the monsters, for example "goo", can be referenced from `show_json(G.monsters)` [08/02/17]
-	var min_d=999999,target=null;
-
-	if(!args) args={};
-	if(args && args.target && args.target.name) args.target=args.target.name;
-	if(args && args.type=="monster") game_log("get_nearest_monster: you used monster.type, which is always 'monster', use monster.mtype instead");
-	if(args && args.mtype) game_log("get_nearest_monster: you used 'mtype', you should use 'type'");
-
-	var targeting_me = 0;
-	var players_nearby = 0;
-	for(id in parent.entities)
-	{
-		var current=parent.entities[id];
-		if (current.type === "character" && parent.distance(character,current) < 150)
-			players_nearby++;
-		if(current.type!="monster" || !current.visible || current.dead) continue;
-		if (current.target && current.target === character.name) targeting_me++;
-	}
-	if (targeting_me > players_nearby + 1)
-	{
-		set_message("(scared)");
-		return get_targeted_monster();
-	}
-	
-	for(id in parent.entities)
-	{
-		var current=parent.entities[id];
-		if(current.type!="monster" || !current.visible || current.dead) continue;
-		if (current.target && current.target === character.name) targeting_me++;
-		if(args.type && current.mtype!=args.type) continue;
-		if(args.min_xp && current.xp<args.min_xp) continue;
-		if(args.max_att && current.attack>args.max_att) continue;
-		if(args.target && current.target!=args.target) continue;
-		if(args.no_target && current.target && current.target!=character.name) continue;
-		if(args.exclusive_target && current.target && current.target===character.name) continue;
-		if(args.path_check && !can_move_to(current)) continue;
-		var c_dist=parent.distance(character,current);
-		if(c_dist<min_d) min_d=c_dist,target=current;
-	}
-	return target;
-}
-
 var attack_mode = true;
 var move_to_engage = true;
+
+
+function prepareAttack()
+{
+
+}
+
+
+function performAttack()
+{
+    // 
+}
+
+function targetChoice(args)
+{
+    let current_target = get_targeted_monster();
+    let targeting_me = [];
+    let in_range = [];
+    let other = [];
+    for (id in parent.entities) {
+        let current = parent.entities[id];
+        if (current.type != "monster" || !current.visible || current.dead) continue;
+        if (args.type && current.mtype != args.type) continue;
+        if (args.min_xp && current.xp < args.min_xp) continue;
+        if (args.max_att && current.attack > args.max_att) continue;
+        if (args.min_att && current.attack < args.min_att) continue;
+        if (args.target && current.target != args.target) continue;
+        if (args.no_target && current.target && current.target != character.name) continue;
+        if (args.exclusive_target && current.target && current.target === character.name) continue;
+        if (args.path_check && !can_move_to(current)) continue;
+        if (current == current_target) continue; // Treated specially below.
+
+        if (current.target && current.target === character.name)
+            targeting_me.push(current);
+        else if (is_in_range(current, args.skill))
+            in_range.push(current);
+        else
+            other.push(current);
+    }
+
+    // Always include current target if valid and in range.
+    let targets = [];
+    if (current_target && !current_target.rip && is_in_range(current_target))
+        targets.push(current_target)
+
+    // Next add anything else targeting me - it has to die!
+    targets = targets.concat(targeting_me);
+
+    // Add other targets in range - but only if we don't have to focus on a specific enemy.
+    if (!targets.find(t => t.mtype === "phoenix"))
+        targets = targets.concat(in_range)
+
+    // Keep only the first n.
+    targets = targets.slice(0, args.max_targets || 1);
+
+    // Got anything? Return it.
+    if (targets.length > 0)
+        return targets;
+
+    // Otherwise, pick the nearest monster (which is necessarily outside our range).
+    return [getNearestMonster(args)];
+}
+
+
+function targetsInCleaveRange()
+{
+    let count = 0;
+    for (id in parent.entities) {
+        let current = parent.entities[id];
+        if (current.type != "monster" || !current.visible || current.dead) continue;
+        //if (is_in_range(current, "cleave")) // unreliable atm
+        if (simple_distance(character, current) < G.skills.cleave.range)
+            count++;
+    }
+    return count;
+}
+
+
+if (false && character.name === "MKRa")
+    setInterval(function () {
+        var targeting_me = [];
+        for (id in parent.entities) {
+            var current = parent.entities[id];
+            if (current.type != "monster" || !current.visible || current.dead) continue;
+            if (current.target && current.target === character.name) targeting_me.push(current);
+        }
+        var targetMeStr = "(" + targeting_me.length + ")";
+        for (t of targeting_me)
+            targetMeStr += ", " + t.id;
+        flog("Targeting me = " + targetMeStr + "; my attack = " + character.attack + "; my mana = " + character.mp + "; last ping = " + parent.pings[parent.pings.length - 1]);
+    }, 20);
+
+
 
 setInterval(function () {
 
@@ -81,43 +126,88 @@ setInterval(function () {
     if (is_moving(character) || is_transporting(character)) return;
     if (in_town(character)) return;
 
-    //var target = get_targeted_monster();
-    var newTarget = get_nearest_monster({ min_xp: 100, max_att: 330 });
-    //if (!target || ) {
-        if (newTarget) change_target(newTarget);
-        else {
-            set_message("No Monsters");
-            return;
-        }
-    //}
-		
-		var target = newTarget;
-
-				if (character.name === "MauranKilom" && character.in === "winterland" && character.hp > 0.5 * character.max_hp)
-					target = get_nearest_monster_new({ min_xp: 100, max_att: 330, no_target: true, exclusive_target: true });
-        if (target) change_target(target);
-				
-    if (!is_in_range(target)) {
-        if (!move_to_engage) return;
-        move(
-			character.x + (target.x - character.x) * c("move_ratio", 0.2),
-			character.y + (target.y - character.y) * c("move_ratio", 0.2)
-			);
-        // Walk half the distance
+    let targets = targetChoice({ min_xp: 1, max_att: 230, min_att: 10, max_targets: c("max_targets", 1) });
+    if (targets.length == 0)
+    {
+        set_message("No monsters");
+        return;
     }
-    else if (can_attack(target)) {
-        set_message("Attacking");
-				if (character.name == "MKRa" && character.mp > 300)
-				{
-					let targets = Object.values(parent.entities).filter(entity => entity.mtype === "bee" && is_in_range(entity, "3shot"));
-					if (targets.length >= 2)
-						use_skill("3shot", targets);
-					else
-						attack(target);
-				}
-				else
-					attack(target);
-        //move(character.x, character.y - 0);
+
+    let primary_target = targets[0];
+    if (!primary_target)
+        return;
+
+    let current_target = get_targeted_monster();
+    if (current_target && current_target.mtype === "phoenix")
+        primary_target = current_target;
+    else if (current_target != primary_target)
+        change_target(primary_target);
+
+    if (!is_in_range(primary_target))
+    {
+        const MAX_DIST = 140;
+        let dx = (primary_target.x - character.x) * c("move_ratio", 0.2);
+        let dy = (primary_target.y - character.y) * c("move_ratio", 0.2);
+        move(character.x + min(dx, MAX_DIST), character.y + min(dy, MAX_DIST));
+        return;
+    }
+
+    if (can_attack(primary_target))
+    {
+        set_message("Attacking")
+        if (character.name == "MKRa" && character.mp >= 300 && targets.length > 2)
+            use_skill("3shot", targets);
+        else if (character.name == "MKWa" && character.slots.mainhand.name == "bataxe" && character.mp >= 720 && targetsInCleaveRange() >= 4)
+            use_skill("cleave");
+        else
+            attack(primary_target);
     }
 
 }, 1000 / 16 + 5);
+
+
+// Energize
+setInterval(function () {
+    if (character.name !== "MauranKilom")
+        return;
+    if (parent.next_skill["energize"] > new Date())
+        return;
+    let MKRa = parent.entities["MKRa"];
+    if (!MKRa)
+        return;
+    if (parent.distance(character, MKRa) > 310)
+        return;
+    //if (MKRa.max_mp - MKRa.mp < 300)
+    if (MKRa.mp > 700)
+        use_skill("energize", MKRa);
+}, 205);
+
+
+
+/*
+
+
+map_key("H", "snippet", "for (let index in character.items) if (character.items[index]) { send_item('MKMe', index, 1000000); break; }");
+map_key("G", "snippet", "send_gold('MKMe', 1000000);");
+
+//Modified source code of: draw_circle
+function draw_circle_on_char(radius,size,color)
+{
+	if(!game.graphics) return;
+	if(!color) color=0x00F33E;
+	if(!size) size=0.3;
+	e=new PIXI.Graphics();
+	e.lineStyle(size, color);
+	e.drawCircle(0,0,radius);
+	parent.drawings.push(e);
+	character.addChild(e);
+	return e;
+}
+
+let eCleave = null;
+setInterval(function () {
+    if (!eCleave) {
+        eCleave = draw_circle_on_char(G.skills.cleave.range);
+	}
+}, 10);
+*/
