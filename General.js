@@ -1,11 +1,16 @@
 
-var fs = require("fs");
-var path = require("path");
-var os = require("os");
 
 const CHARACTER_NAME = parent.character.name;
+const IS_ELECTRON = is_electron();
+
+var fs;
+if (IS_ELECTRON) {
+    fs = require('fs');
+}
 
 function flog(message) {
+    if (!IS_ELECTRON)
+        return;
     var now = new Date();
     var full_message = "[" + now.toISOString() + "] " + message;
     var filePath = path.join("D:/Users/Max/Documents/AdventureLand/Logs/", CHARACTER_NAME + ".log");
