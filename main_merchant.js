@@ -120,4 +120,4 @@ setInterval(function () {
 */
 
 
-});
+}).catch(e => game_log("Error while loading: " + e));
