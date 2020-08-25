@@ -2,7 +2,7 @@
 // Remove flog calls (or replace with your own logging system) if you want to use this!
 
 
-const ENABLE_PHOENIX_CHASE = true;
+var ENABLE_PHOENIX_CHASE = true;
 
 // This is available in G too, but only in ugly array format. TODO: Do the conversion here automatically.
 const PHOENIX_SPAWNS = [
@@ -185,10 +185,12 @@ function moveToSpawn(spawnNum)
 }
 
 
-if (ENABLE_PHOENIX_CHASE && character.name == "MauranKilom") // One day I'll have a UI for this stuff...
+if (character.name == "MauranKilom") // One day I'll have a UI for this stuff...
 {
 setInterval(function() {
-
+    if (!ENABLE_PHOENIX_CHASE)
+        return;
+    
     let phoenix = getNearbyPhoenix();
     
     if (!phoenix && currentSpawn == -1) {
