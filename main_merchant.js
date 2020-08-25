@@ -56,6 +56,8 @@ setInterval(function () {
         var mluck = current.s["mluck"];
         if (mluck && mluck.f === "MKMe")
             current.priority += 60 - (mluck.ms / 1000 / 60);
+        else if (mluck && mluck.strong)
+	        continue;
         else
             current.priority += 100;
         
@@ -76,7 +78,7 @@ setInterval(function () {
     let sorted_targets = sort_by(targets, t => -t.priority);
     
     // Buff!
-    if (sorted_targets.length > 0)
+    if (sorted_targets.length > 0 && sorted_targets[0].priority > 0)
         use_skill("mluck", sorted_targets[0]);
 }, 1000 / 2);
 
