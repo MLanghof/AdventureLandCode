@@ -1,20 +1,11 @@
-function load_local_code(fileName) {
-    const fs = require('fs')
-    const data = fs.readFileSync("D:/Users/Max/Documents/AdventureLand/Code/" + fileName, 'utf8')
-    var library = document.createElement("script");
-    library.type = "text/javascript";
-    library.text = data;
-    document.getElementsByTagName("head")[0].appendChild(library);
-}
-
-
-load_local_code("Data.js");
-load_local_code("General.js");
-load_local_code("Towns.js");
-load_local_code("Upgrading.js");
-load_local_code("Events.js");
-load_local_code("PhoenixChase.js");
-load_local_code("UI.js");
+loadCode("Data.js")
+.then(p => loadCode("General.js"))
+.then(p => loadCode("Towns.js"))
+.then(p => loadCode("Upgrading.js"))
+.then(p => loadCode("Events.js"))
+.then(p => loadCode("PhoenixChase.js"))
+.then(p => loadCode("UI.js"))
+.then(function() {
 
 flog("Code loaded.")
 
@@ -211,3 +202,5 @@ setInterval(function () {
 	}
 }, 10);
 */
+	
+}).catch(e => game_log("Error while loading: " + e));
