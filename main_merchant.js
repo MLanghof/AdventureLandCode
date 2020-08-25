@@ -1,11 +1,3 @@
-function load_local_code(fileName) {
-    const fs = require('fs')
-    const data = fs.readFileSync("D:/Users/Max/Documents/AdventureLand/Code/" + fileName, 'utf8')
-    var library = document.createElement("script");
-    library.type = "text/javascript";
-    library.text = data;
-    document.getElementsByTagName("head")[0].appendChild(library);
-}
 
 loadCode("General.js");
 loadCode("Data.js");
