@@ -1,9 +1,11 @@
 
-loadCode("General.js");
-loadCode("Data.js");
-loadCode("Towns.js");
-loadCode("Upgrading.js");
-loadCode("Events.js");
+loadCode("General.js")
+.then(p => loadCode("Data.js"))
+.then(p => loadCode("Towns.js"))
+.then(p => loadCode("Upgrading.js"))
+.then(p => loadCode("Events.js"))
+.then(p => () =>
+
 
 game_log("Finished code loading!");
 
@@ -116,3 +118,6 @@ setInterval(function () {
         parent.socket.emit("eval", { command: "stop" })
 }, 100)
 */
+
+
+);
