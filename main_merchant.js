@@ -4,7 +4,7 @@ loadCode("General.js")
 .then(p => loadCode("Towns.js"))
 .then(p => loadCode("Upgrading.js"))
 .then(p => loadCode("Events.js"))
-.then(p => function() {
+.then(function() {
 
 
 game_log("Finished code loading!");
