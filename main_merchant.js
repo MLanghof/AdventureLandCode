@@ -7,11 +7,11 @@ function load_local_code(fileName) {
     document.getElementsByTagName("head")[0].appendChild(library);
 }
 
-load_local_code("General.js");
-load_local_code("Data.js");
-load_local_code("Towns.js");
-load_local_code("Upgrading.js");
-load_local_code("Events.js");
+loadCode("General.js");
+loadCode("Data.js");
+loadCode("Towns.js");
+loadCode("Upgrading.js");
+loadCode("Events.js");
 
 game_log("Finished code loading!");
 
