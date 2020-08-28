@@ -72,8 +72,17 @@ function targetChoice(args)
     // Got anything? Return it.
     if (targets.length > 0)
         return targets;
+	
 
-    // Otherwise, pick the nearest monster (which is necessarily outside our range).
+    // Otherwise, pick the nearest monster (which is necessarily outside our range), or
+    // phoenix if it is in range.
+    for (id in parent.entities) {
+        let current = parent.entities[id];
+        if (current.type != "monster" || !current.visible || current.dead) continue;
+        if (current.mtype == "phoenix")
+            return [current];
+    }
+    
     return [getNearestMonster(args)];
 }
 
