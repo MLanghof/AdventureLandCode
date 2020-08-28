@@ -116,6 +116,16 @@ if (false && character.name === "MKRa")
     }, 20);
 
 
+function monstersTargetingMe() {
+    var targeting_me = [];
+    for (id in parent.entities) {
+        var current = parent.entities[id];
+        if (current.type != "monster" || !current.visible || current.dead) continue;
+        if (current.target && current.target === character.name) targeting_me.push(current);
+    }
+    return targeting_me;
+}
+	
 
 setInterval(function () {
 
@@ -136,11 +146,15 @@ setInterval(function () {
     let primary_target = targets[0];
     if (!primary_target)
         return;
-
+    
+    // Dirty fix for soloing phoenix:
+    // Random straggler monsters need to be killed or they might overwhelm the regen.
+    let targeting_me = monstersTargetingMe();
+    if (targeting_me.length > 0)
+        primary_target = targeting_me[Math.floor(Math.random() * targeting_me.length)];
+    
     let current_target = get_targeted_monster();
-    if (current_target && current_target.mtype === "phoenix")
-        primary_target = current_target;
-    else if (current_target != primary_target)
+    if (current_target != primary_target)
         change_target(primary_target);
 
     if (!is_in_range(primary_target))
