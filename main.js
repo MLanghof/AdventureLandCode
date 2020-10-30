@@ -208,6 +208,23 @@ setInterval(function () {
 }, 205);
 
 
+// Hunter's Mark
+setInterval(function () {
+    if (character.name !== "MKRa")
+        return;
+    if (parent.next_skill["huntersmark"] > new Date())
+        return;
+    let target = get_targeted_monster();
+    if (!target)
+        return;
+    if (target.max_hp < 50000)
+        return;
+    if (parent.distance(character, target) > 310)
+        return;
+    if (character.mp > 240)
+        use_skill("huntersmark");
+}, 1005);
+
 let chestSightings = [];
 
 setInterval(function() {
