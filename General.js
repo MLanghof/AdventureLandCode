@@ -4,8 +4,10 @@ const CHARACTER_NAME = parent.character.name;
 const IS_ELECTRON = is_electron();
 
 var fs;
+var path;
 if (IS_ELECTRON) {
     fs = require('fs');
+    path = require('path');
 }
 
 function flog(message) {
@@ -15,6 +17,34 @@ function flog(message) {
     var full_message = "[" + now.toISOString() + "] " + message;
     var filePath = path.join("D:/Users/Max/Documents/AdventureLand/Logs/", CHARACTER_NAME + ".log");
     fs.appendFile(filePath, full_message + "\n", (err) => {});
+};
+
+function flog_alt(message) {
+    if (!IS_ELECTRON)
+        return;
+    var now = new Date();
+    var full_message = "[" + now.toISOString() + "] " + message;
+    var filePath = path.join("D:/Users/Max/Documents/AdventureLand/Logs/", CHARACTER_NAME + ".alt.log");
+    fs.appendFile(filePath, full_message + "\n", (err) => {});
+};
+
+function chest_log(message) {
+    if (!IS_ELECTRON)
+        return;
+    var now = new Date();
+    var full_message = "[" + now.toISOString() + "] " + message;
+    var filePath = path.join("D:/Users/Max/Documents/AdventureLand/Logs/", CHARACTER_NAME + ".chests.log");
+    fs.appendFile(filePath, full_message + "\n", (err) => {});
+};
+
+function upgrade_log(message) {
+    if (!IS_ELECTRON)
+        return;
+    var now = new Date();
+    var full_message = "[" + now.toISOString() + "] " + message;
+    var filePath = path.join("D:/Users/Max/Documents/AdventureLand/Logs/", CHARACTER_NAME + ".upgrade.log");
+    fs.appendFile(filePath, full_message + "\n", (err) => {});
+    game_log("U: " + message);
 };
 
 
