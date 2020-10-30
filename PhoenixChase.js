@@ -157,7 +157,7 @@ function moveToSpawn(spawnNum)
         }
         
         // Within walking distance?
-        if (simple_distance(character, {x: spawnPos[0], y: spawnPos[1]}) < 700) {
+        if (simple_distance(character, {x: spawnPos[0], y: spawnPos[1]}) < 400) {
             smart_move_limited({x: spawnPos[0], y: spawnPos[1]});
             return;
 	    }
