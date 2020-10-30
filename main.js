@@ -239,6 +239,8 @@ parent.openLoggedChests = openLoggedChests;
 map_key("H", "snippet", "for (let index in character.items) if (character.items[index]) { send_item('MKMe', index, 1000000); break; }");
 map_key("G", "snippet", "send_gold('MKMe', 1000000);");
 
+map_key("M", "snippet", 'use("magiport", "MKRa"); setTimeout(() => use("magiport", "MKWa"), 200); setTimeout(() => use("magiport", "MKWa"), 400);');
+
 //Modified source code of: draw_circle
 function draw_circle_on_char(radius,size,color)
 {
