@@ -92,7 +92,7 @@ character.on("death", function (data) {
 });
 
 game.on("event", function (data) {
-    flog("[Event] New event in " + data.map + ": " + event.name);
+    flog("[Event] New event in " + data.map + ": " + data.name);
 });
 
 game.on("shutdown", function (data) {
