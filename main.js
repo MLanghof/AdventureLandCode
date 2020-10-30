@@ -197,6 +197,41 @@ setInterval(function () {
 }, 205);
 
 
+let chestSightings = [];
+
+setInterval(function() {
+  for (let c in parent.chests) {
+    chestSightings[c] = chestSightings[c] ? chestSightings[c] + 1 : 1;
+    if (chestSightings[c] == 10)
+      chest_log(c);
+  }
+}, 1000);
+
+function openLoggedChests(str)
+{
+  // Chest identifiers are currently exactly 30 alphanumeric chars long.
+  let chestsToOpen = str.replace(/.*([A-z0-9]{30})/g, "$1").split("\n");
+
+  let chestIndex = 0;
+
+  let interval = setInterval(function(){
+    if (character.esize < 8)
+      return;
+
+    let id = chestsToOpen[chestIndex];
+
+    game_log("Opening " + id);
+    parent.socket.emit("open_chest", {
+          id: id
+      });
+
+    // This leaves an off-by-one error, but the "undefined" printout is actually useful.
+    if (chestIndex >= chestsToOpen.length)
+      clearInterval(interval);
+    chestIndex += 1;
+  }, 500);
+}
+parent.openLoggedChests = openLoggedChests;
 
 /*
 
