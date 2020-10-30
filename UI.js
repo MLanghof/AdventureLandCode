@@ -21,6 +21,70 @@ function draw_text(text, x, y) {
     parent.map.addChild(t);
 }
 
+
+function floating_text(text, pos, args) {
+    function f(counter, graphic) {
+        return function() {
+            var c = mssince(graphic.last_fade)
+              , d = round(4 * c / graphic.anim_time);
+            2 < d && 7 > d && (d = 4);
+            graphic.y -= graphic.disp_m * d;
+            graphic.alpha = max(0, graphic.alpha - .078 * c / graphic.anim_time);
+            graphic.last_fade = new Date;
+            if (.25 < graphic.alpha)
+                draw_timeout(f(counter + 1, graphic), graphic.anim_time);
+            else {
+                remove_sprite(graphic);
+                try {
+                    graphic.destroy({
+                        texture: !0,
+                        baseTexture: !0
+                    })
+                } catch (q) {
+                    console.log(q)
+                }
+            }
+        }
+    }
+    var g = null;
+    if (!(parent.mode.dom_tests_pixi || parent.no_graphics || parent.paused)) {
+        is_object(pos) && (g = pos,
+        b = get_x(pos),
+        c = get_y(pos),
+        2 == g.mscale && (c += 14));
+        args || (args = {});
+        var color = args.color || "#4C4C4C";
+        g = null;
+        colors[color] && (color = colors[color]);
+        var m = SZ[args.size] || args.size || SZ.normal
+          , p = args.parent || window.map;
+        a = new PIXI.Text(text,{
+            fontFamily: SZ.font,
+            fontSize: m * text_quality,
+            fontWeight: "bold",
+            fill: color,
+            align: "center"
+        });
+        use_layers ? a.parentGroup = text_layer : a.displayGroup = text_layer;
+        a.disp_m = SZ.normal / 18;
+        m > SZ.normal && (a.disp_m = (SZ.normal + 1) / 18);
+        a.anim_time = max(75, parseInt(1800 / m));
+        a.type = "text";
+        a.alpha = 1;
+        a.last_fade = new Date;
+        a.anchor.set(.5, 1);
+        1 < text_quality && (a.scale = new PIXI.Point(1 / text_quality,1 / text_quality));
+        a.x = round(b);
+        a.y = round(c) + 0;
+        args.y && (a.y -= args.y);
+        p.addChild(a);
+        draw_timeout(f(0, a), a.anim_time);
+        args.s && sfx(args.s, a.x, a.y)
+    }
+}
+
+
+
 function bleargh() {
     var b = "";
     b += "<div style='background-color: black; border: 5px solid gray; padding: 14px; font-size: 24px; display: inline-block; max-width: 640px'>";
