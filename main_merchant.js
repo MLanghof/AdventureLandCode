@@ -41,37 +41,62 @@ setInterval(function () {
 }, 1000 / 2);
 
 
+function getMluckPriority(target)
+{
+    let mluck = target.s["mluck"];
+    let isMyChar = (target.owner === OWNER);
+    let isMerchant = (target.ctype && target.ctype === "merchant");
+    let distance = simple_distance(character, target);
+
+    // Always prioritize unbuffed chars.
+    if (!mluck)
+        return 1000 * (isMyChar ? 2 : 1);
+
+    let priority = 0;
+    let minutesPassed = 60 - mluck.ms / 1000 / 60;
+
+    // Buffed by me?
+    if (mluck.f === character.id)
+        priority += minutesPassed * distance / 100;
+    // Strong buff (by someone else)?
+    else if (mluck.strong)
+        return -1;
+    // Buffed in the last minute (by someone else)?
+    else if (minutesPassed < 1)
+        priority += minutesPassed * distance / 100;
+    // Ok, good candidate
+    else
+        priority += 100;
+
+    // Moving (maybe about to leave)?
+    if (is_moving(target))
+        priority += distance / 10;
+
+    // Definitely leaving?
+    if (is_transporting(target))
+        priority += 500;
+
+    // Prioritize own characters.
+    if (isMyChar)
+        priority *= 2;
+
+    // Buffing merchants is kinda pointless.
+    if (isMerchant)
+        priority /= 60;
+
+    return priority;
+}
+
 // Merchant's luck logic.
 setInterval(function () {
-    // Probably chickens?
+    // Probably busy healing vs chickens?
     if (character.mp < 0.5 * character.max_mp)
         return;
 
-    let targets = Object.values(parent.entities).filter(entity => is_character(entity) && parent.distance(character, entity) < 320);
+    let targets = Object.values(parent.entities).filter(entity => is_character(entity) && parent.distance(character, entity) < 320 - 1);
 
-    for (current of targets){
-        current.priority = 0;
-
-        // Not yet buffed by me?
-        var mluck = current.s["mluck"];
-        if (mluck && mluck.f === "MKMe")
-            current.priority += 60 - (mluck.ms / 1000 / 60);
-        else if (mluck && mluck.strong)
-	        continue;
-        else
-            current.priority += 100;
-        
-        // Moving (maybe about to leave)?
-        if (is_moving(current))
-            current.priority += 10;
-
-        // Definitely leaving?
-        if (is_transporting(current))
-            current.priority += 1000;
-
-        // Prioritize own characters.
-        if (current.owner === OWNER)
-            current.priority *= 2;
+    for (let current of targets) {
+        current.priority = getMluckPriority(current);
     }
 
     // Sort by descending priority.
