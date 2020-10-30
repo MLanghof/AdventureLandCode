@@ -67,7 +67,7 @@ function getNearbyPhoenix()
 {
     for (let id in parent.entities) {
         let e = parent.entities[id];
-        if (e && e.type == "monster" && e.mtype == "phoenix")
+        if (e && e.type == "monster" && e.mtype == "phoenix" && e.visible && !e.dead)
             return e;
         // No range check - spawns are assumed to be far enough apart.
 	}
