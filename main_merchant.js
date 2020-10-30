@@ -112,6 +112,174 @@ setInterval(function () {
 }, 1000 / 2);
 
 
+let secondhands_whitelist = [
+    "wcap",
+    "wattire",
+    "wbreeches",
+    "wshoes",
+    "wgloves",
+    "stramulet",
+    "dexamulet",
+    "intamulet",
+    "strring",
+    "dexring",
+    "intring",
+    "strearring",
+    "dexearring",
+    "intearring",
+    "strbelt",
+    "dexbelt",
+    "intbelt",
+    "santasbelt",
+    "elixirstr0",
+    "elixirdex0",
+    "elixirint0",
+    "handofmidas",
+    "wingedboots",
+    "cape",
+    "jacko",
+    "orbofstr",
+    "orbofdex",
+    "orbofint",
+    //"cclaw",
+    "cape",
+    "hbow",
+    "t2bow",
+    "basher",
+    "bataxe",
+    "fireblade",
+    "firestaff",
+    "firebow",
+    "sshield",
+    "wbook0",
+    "wbook1",
+    "t2quiver",
+    "elixirstr0",
+    "elixirdex0",
+    "elixirint0",
+    "elixirstr1",
+    "elixirdex1",
+    "elixirint1",
+    "elixirstr2",
+    "elixirdex2",
+    "elixirint2",
+    "pumpkinspice",
+    "offeringp",
+
+    "essenceoflife",
+    "rattail",
+    "frogt",
+    "carrot",
+    "bfur",
+    "electronics",
+    "essenceofgreed",
+    "mbones",
+    "gslime",
+    "beewings",
+    "bandages",
+
+    "seashell",
+    "leather",
+    "mistletoe",
+    "candy1",
+    "gem1",
+    "goldenegg",
+    "armorbox",
+    "bugbountybox",
+    "candy0",
+    "gem0",
+    "weaponbox",
+
+    "cxjar",
+    "emptyjar",
+    "poison",
+];
+
+let PARENT = parent;
+
+const MAX_SECONDHANDS_BUY = 500000; // Do not spend more than this.
+
+let lastSBuy = new Date();
+
+PARENT.noSecondhandsUI = false;
+
+let lastRids = [];
+
+function emitSecondhands() {
+    parent.socket.emit("secondhands");
+    PARENT.noSecondhandsUI = true;
+}
+
+// When somebody sells something that we want, immediately ask Ponty about it.
+game.on("sell", function (a) {
+    flog("[Vendor] " + a.name + " sold " + JSON.stringify(a.item) + " to NPC " + a.npc);
+
+    for (let itemName of secondhands_whitelist) {
+        if (a.item.name === itemName) {
+            emitSecondhands();
+            return;
+        }
+    }
+});
+
+// But also ask Ponty regularly for any new bling.
+setInterval(function() {
+    if (distance(character, find_npc("secondhands")) < 400)
+        emitSecondhands();
+}, 600);
+
+// When Ponty shows us merch, check if we want to buy any of it.
+register_handler("secondhands", function(d) {
+    let boughtItemCount = 0;
+    for (let offeredItem of d) {
+        let buy = false;
+
+        if (G.items[offeredItem.name].type === "material")
+            buy = true;
+        for (let itemName of secondhands_whitelist) {
+            if (offeredItem.name == itemName)
+                buy = true;
+        }
+
+        if (!buy)
+            continue;
+
+        // We have already requested to buy this item.
+        if (lastRids.indexOf(offeredItem.rid) > -1)
+            continue;
+
+        // From html.js:
+        let itemValue = calculate_item_value(offeredItem) * 2 * (offeredItem.q || 1);
+        if (itemValue > MAX_SECONDHANDS_BUY)
+            continue;
+
+        //if (new Date() - lastSBuy > 80) {
+        if (boughtItemCount < 4) {
+            parent.socket.emit("sbuy", {"rid": offeredItem.rid });
+            lastRids.push(offeredItem.rid);
+            boughtItemCount += 1;
+        }
+        //}
+    }
+    PARENT.noSecondhandsUI = false;
+});
+
+parent._old_render_secondhands = parent._old_render_secondhands || parent.render_secondhands;
+
+parent.render_secondhands = function(a)
+{
+    if (PARENT.noSecondhandsUI)
+        return;
+    PARENT.console.log(PARENT.noSecondHandsUI);
+    PARENT._old_render_secondhands(a);
+};
+
+// Occasionally clear the rids. We just keep track of them to not get a limitdc.
+setInterval(function() {
+    lastRids = [];
+}, 12345);
+
+
 
 // Danger below!
 
