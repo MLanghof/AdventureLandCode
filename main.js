@@ -133,7 +133,7 @@ setInterval(function () {
     loot();
 
     if (!attack_mode || character.rip) return;
-    if (is_moving(character) || is_transporting(character)) return;
+    if (is_moving(character) || isTransportingFixed(character)) return;
     if (in_town(character)) return;
 
     let targets = targetChoice({ min_xp: 1, max_att: 230, min_att: 10, max_targets: c("max_targets", 1) });
