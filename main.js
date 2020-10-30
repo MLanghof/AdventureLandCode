@@ -125,8 +125,45 @@ function monstersTargetingMe() {
     }
     return targeting_me;
 }
-	
 
+
+let lastMove = new Date();
+
+// move that doesn't cause dclimit (outside of packet loss scenarios)
+function safe_move(x, y)
+{
+    if (new Date() - lastMove > 70 /*ms*/) {
+        move(x, y);
+        lastMove = new Date();
+    }
+}
+
+function approach(target, upTo) {
+    const MAX_DIST = 80;
+    let dx = (get_x(target) - get_x(character)) * c("move_ratio", 0.2);
+    let dy = (get_y(target) - get_y(character)) * c("move_ratio", 0.2);
+    // Only move if it's a nontrivial amount.
+    if ((abs(dx) > upTo) || (abs(dy) > upTo))
+        safe_move(get_x(character) + min(dx, MAX_DIST), get_y(character) + min(dy, MAX_DIST));
+}
+
+
+// Does a move towards the target, but only for up to the specified amount of time.
+function move_max_ms(target, ms)
+{
+    let fullDist = simple_distance(character, target);
+    let speed = character.speed;
+    let fullTime = fullDist / character.speed * 1000;
+    if (fullTime < ms)
+        safe_move(get_x(target), get_y(target));
+    else
+    {
+        let ratio = ms / fullTime;
+        let x = get_x(character) + ratio * (get_x(target) - get_x(character));
+        let y = get_y(character) + ratio * (get_y(target) - get_y(character));
+        safe_move(x, y);
+    }
+}
 
 let enable3Shot = true;
 if (character.name == "MKRa")
@@ -168,10 +205,7 @@ setInterval(function () {
 
     if (!is_in_range(primary_target))
     {
-        const MAX_DIST = 140;
-        let dx = (primary_target.x - character.x) * c("move_ratio", 0.2);
-        let dy = (primary_target.y - character.y) * c("move_ratio", 0.2);
-        move(character.x + min(dx, MAX_DIST), character.y + min(dy, MAX_DIST));
+        approach(primary_target, 1);
         return;
     }
 
