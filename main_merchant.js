@@ -11,6 +11,9 @@ loadCode("General.js")
 game_log("Finished code loading!");
 
 
+add_top_button("electron_dev_tools", "DEV", function() { parent.electron_dev_tools(); })
+
+
 // Regenerate resources.
 setInterval(function () {
     use_hp_or_mp_fixed();
