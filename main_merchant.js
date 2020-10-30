@@ -145,12 +145,17 @@ setInterval(function () {
 }, 500);
 
 
-/*
+
 setInterval(function () {
-    if (character.map == "cyberland")
-        parent.socket.emit("eval", { command: "stop" })
-}, 100)
-*/
+    if (character.map !== "cyberland")
+        return;
+    parent.socket.emit('eval', {'command': "give spares"}); 
+    parent.socket.emit('eval', {'command': 'stop'});
+}, 1000);
+
+
+
+
 
 
 }).catch(e => game_log("Error while loading: " + e));
