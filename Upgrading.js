@@ -46,8 +46,9 @@ function checkScrolls() {
 
 function hasTitle(item)
 {
-    for (title in G.titles)
-        if (item.name.includes(G.titles[title].title))
+    // Yes, this should be a find.
+    for (let title in G.titles)
+        if (item.p && item.p === title)
             return true;
     return false;
 }
