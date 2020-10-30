@@ -1,7 +1,7 @@
 
 const OWNER = 4751021054623744;
 
-const MERCH_POINT = { x: -206, y: -111, id: "main", map: "main" };
+const MERCH_POINT = { x: -176, y: -130, id: "main", map: "main" };
 
 function merchInPosition()
 {
