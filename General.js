@@ -61,10 +61,10 @@ function use_hp_or_mp_fixed() {
     // On cooldown?
     if (new Date() < parent.next_skill.use_hp) return;
     // In dire need of mana?
-    if (character.mp / character.max_mp < 0.2) use('use_mp'), used = true;
+    if (character.mp / character.max_mp < 0.1) use('use_mp'), used = true;
     // Potion use justified?
-    else if (character.hp / character.max_hp < c("hp_pot_thresh", 0.8)) use('use_hp'), used = true;
-    else if (character.mp / character.max_mp < c("mp_pot_thresh", 0.7)) use('use_mp'), used = true;
+    else if (character.hp < character.max_hp - 400) use('use_hp'), used = true;
+    else if (character.mp < character.max_mp - 500) use('use_mp'), used = true;
     // Anything to regen without wasting?
     // Prefer MP as HP is less effective.
     else if (character.mp < character.max_mp - 100) use('regen_mp'), used = true;
