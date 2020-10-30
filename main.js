@@ -5,6 +5,8 @@ loadCode("Data.js")
 .then(p => loadCode("Events.js"))
 .then(p => loadCode("PhoenixChase.js"))
 .then(p => loadCode("UI.js"))
+.then(p => loadCode("Future.js"))
+.then(p => loadCode("Cleave.js"))
 .then(function() {
 
 flog("Code loaded.")
@@ -203,7 +205,24 @@ setInterval(function () {
     if (current_target != primary_target)
         change_target(primary_target);
 
-    if (!is_in_range(primary_target))
+    if (couldCleave() && cleaveTargetPos && cleaveTargetCount >= 5)
+    {
+        if (simple_distance(cleaveTargetPos, character) > 1)
+        {
+            move_max_ms(cleaveTargetPos, 200);
+            return;
+        }
+        else if (character.mp >= G.skills.cleave.mp && /*targetsInCleaveRange()*/ cleaveTargetCount >= 5)
+        {
+            use_skill("cleave");
+            parent.d_text("HIT " + cleaveTargetCount, character, {y: -30, color: 0x3E00F3, size: 24});
+            cleaveTargetPos = null;
+            cleaveTargetCount = 0;
+        }
+        else if (ms_until(parent.next_skill["use_mp"]) < 1000 / character.frequency && primary_target.mtype != "phoenix")
+            return; // Don't attack, next mana potion is coming.
+    }
+    else if (!is_in_range(primary_target))
     {
         approach(primary_target, 1);
         return;
@@ -216,8 +235,8 @@ setInterval(function () {
             use_skill("5shot", targets);
         else if (character.name == "MKRa" && enable3Shot && character.mp >= 300 && targets.length > 2)
             use_skill("3shot", targets);
-        else if (character.name == "MKWa" && character.slots.mainhand.name == "bataxe" && character.mp >= 720 && targetsInCleaveRange() >= 4)
-            use_skill("cleave");
+        //else if (character.name == "MKWa" && character.slots.mainhand.name == "bataxe" && character.mp >= 720 && targetsInCleaveRange() >= 4)
+        //    use_skill("cleave");
         else
             attack(primary_target);
     }
@@ -294,6 +313,10 @@ function openLoggedChests(str)
   }, 500);
 }
 parent.openLoggedChests = openLoggedChests;
+
+
+setInterval(cleaveLogic, 200);
+
 
 /*
 
