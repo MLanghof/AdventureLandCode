@@ -1,4 +1,13 @@
 
+
+function electronZoom(factor) {
+  const {webFrame} = require('electron');
+  webFrame.setZoomFactor(factor);
+}
+
+map_key("DOWN", "snippet", "electronZoom(0.5)");
+map_key("UP", "snippet", "electronZoom(1.0)");
+
 function bleargh() {
     var b = "";
     b += "<div style='background-color: black; border: 5px solid gray; padding: 14px; font-size: 24px; display: inline-block; max-width: 640px'>";
