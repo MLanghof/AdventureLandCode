@@ -34,6 +34,10 @@ use_skill("blink", [-994, 1284]);
 smart_move(294, 1484);
 0 1440
 
+// Bats
+smart_move({x: 1250, y: -800, map: "cave"});
+1250 -800
+
 map_key("B","snippet","use_skill('blink', [294, 1484])");
 map_key("F","snippet","use_skill('blink', [-1094, 1340])");
 map_key("O","snippet","use_skill('blink', [1600, -500])");
@@ -50,7 +54,8 @@ use_skill("blink", [1600, -500]);
 1200, 70 is other side
 
 Wishlist:
-- code loading that works
+- fix phoenix movement -> done...
+- code loading that works -> done!
 - Mob priorization
 - Traveling salesman farming leveled up mobs
 - Avoid Jr
@@ -58,6 +63,25 @@ Wishlist:
   - points of interest
   - code toggle
   - variable toggles
+  - "manual override"
+  - electron dev tools
+  -> see below
+- predictive ping attack
+- future[entity]
+- mob farming choice
+- unsupervised
+  - potions
+  - merchant/bank stuff
+  - death safety (when dead, less xp than previous death?)
+  - It's really all about inventory management
+  -> readyToLeaveTown()
+- ponty
+  - periodically, and when other vendors lose cash!
+- firing while moving (how to distinguish user input?!?)
+  - maybe just check for one-shottable stuff?
+- dance moves!
+- monster hunt -> focus on specific mob
+
 
 const {webFrame} = require('electron')
 webFrame.setZoomFactor(0.5);
@@ -76,11 +100,30 @@ gantit = Comer
 SpadarFaar = Foaly
 earthiverse = eart* (?)
 Beg = VanHalen
+Dre4mc4tcher = Biene
+Marcantouf = ChantMarc 
+egehank = Bjarnu
+
 
 (\[.*\]).*= 3;.*\n(.*= 3; my attack = 610.*\n)+(\[.*\]).*\n
 Start: \1 ### Scared: \3\n
 
+Ponty:
+https://discordapp.com/channels/238332476743745536/238332476743745536/750275078897532968
+
+Buttons:
+https://discordapp.com/channels/238332476743745536/243707345887166465/750380274067439698
+
 send_local_cm
+
+Mouse wheel zoom:
+https://discordapp.com/channels/238332476743745536/238332476743745536/757002912927973498
+
+
+function set_button_value(id,value)
+function set_button_color(id,color)
+function set_button_onclick(id,fn)
+function clear_buttons()
 
 
 (\d\d\.\d\d)% vs\. \1
@@ -189,3 +232,67 @@ function bloop_test(skill)
   return "show_modal('<div id=\\'al_skill_preview\\' style=\\'width: 480px\\'></div>', {wrap: !1,hideinbackground: !0,});render_skill('#al_skill_preview', '"+skill+"');"
 }
 [6:41 AM] number_e: just call bleargh() and you should have a nice modal with all the skills listed and clickable
+
+
+
+function openLoggedChests(str)
+{
+  let chestsToOpen = str.replace(/.*([A-z0-9]{30})/g, "$1").split("\n");
+
+  let chestIndex = 0;
+
+  let interval = setInterval(function(){
+    if (character.esize < 8)
+      return;
+
+    let id = chestsToOpen[chestIndex];
+    
+    game_log("Opening " + id);
+    parent.socket.emit("open_chest", {
+          id: id
+      });
+    if (chestIndex >= chestsToOpen.length)
+      clearInterval(interval);
+    chestIndex += 1;
+  }, 500);
+}
+
+game_log(str.replace(/.*([A-z0-9]{30})/g, "$1").split("\n"));
+
+let chestsToOpen = [
+  // ...
+];
+
+let chestIndex = 0;
+
+setInterval(function(){
+  if (character.esize < 8)
+    return;
+
+  let id = chestsToOpen[chestIndex];
+  
+  game_log("Opening " + id);
+  parent.socket.emit("open_chest", {
+        id: id
+    });
+  chestIndex += 1;
+}, 500);
+
+// .*([a-Z0-9]{30})
+// "\1",
+
+
+
+
+42["upgrade",{"item_num":2,"scroll_num":33,"offering_num":null,"clevel":6,"calculate":true}]
+42["game_response",{"response":"upgrade_chance","chance":0.32353911504195954}]
+
+            return socket.emit("upgrade", {
+                item_num: a,
+                scroll_num: b,
+                offering_num: c,
+                clevel: character.items[a] && character.items[a].level || 0,
+                calculate: f
+            }),
+            last_uping = new Date,
+            push_deferred("upgrade");
