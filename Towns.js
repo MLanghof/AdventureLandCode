@@ -38,3 +38,33 @@ function in_town(entity) {
     }
     return false;
 }
+
+
+// character.c.town is just unreliable (tends to be cleared too early)
+const TOWN_END_MARGIN_MS = 500;
+const TOWN_END_HELPER_INTERVAL = 200;
+
+let townEnd = null;
+
+setInterval(function () {
+    if (character.c.town && character.c.town.ms < 1.5 * TOWN_END_HELPER_INTERVAL)
+        townEnd = new Date(new Date().getTime() + character.c.town.ms + TOWN_END_MARGIN_MS);
+}, TOWN_END_HELPER_INTERVAL);
+
+function wasIRecentlyTowning() {
+    if (!townEnd)
+        return false;
+    if (new Date() < townEnd)
+        return true;
+    // townEnd is in the past.
+    townEnd = null;
+    return false;
+}
+
+function isTransportingFixed(entity) {
+    if (is_transporting(entity))
+        return true;
+    if (entity.me && wasIRecentlyTowning())
+        return true;
+    return false;
+}
