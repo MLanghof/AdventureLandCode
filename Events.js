@@ -40,7 +40,10 @@ function upgradeHandler(event)
     else
         return; // Still waiting for result.
 
-    let output = "[Upgrade] +" + event.p.level + " " + G.items[event.p.name].name + " with " + event.p.scroll + " - " + result +": " + event.p.nums[3]+event.p.nums[2]+"."+event.p.nums[1]+event.p.nums[0] + "% vs. "+ event.p.chance*100 + "%"
+    let offeringStr = "";
+    if (event.p.offering)
+      offeringStr = " and " + event.p.offering;
+    let output = "[Upgrade] +" + event.p.level + " " + G.items[event.p.name].name + " with " + event.p.scroll + offeringStr + " - " + result +": " + event.p.nums[3]+event.p.nums[2]+"."+event.p.nums[1]+event.p.nums[0] + "% vs. "+ event.p.chance*100 + "%"
     flog(output);
 }
 
@@ -54,6 +57,19 @@ register_handler("game_log", function(a) {
     else if (a.message && a.message.startsWith("Received ") && a.message.color === "gold")
         flog("[Exchange] " + a.message);
 });
+
+// Log exchange results.
+register_handler("upgrade", function(a) {
+    if (character.name != "MKMe")
+        return;
+    game_log(a);
+    if (a.type == "upgrade")
+      upgrade_log("Someone attempted an upgrade, with result " + (a.success ? "success" : "failure"));
+    // This triggers every time *any* upgrade (including exchanges!) happens, but only reports success/failure.
+});
+
+
+
 
 function on_cm(name, data)
 {
