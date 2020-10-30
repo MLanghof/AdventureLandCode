@@ -133,3 +133,10 @@ function getNearestMonster(args)
 function haveEmptySlot() {
     return character.items.findIndex(i => !i) != -1;
 }
+
+
+function ms_until(a, b)
+{
+    b || (b = new Date);
+    return a.getTime() - b.getTime()
+}
