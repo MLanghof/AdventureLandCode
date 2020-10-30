@@ -276,10 +276,6 @@ function countItemsWhere(f) {
     return count;
 }
 
-function haveEmptySlot() {
-    return character.items.findIndex(i => !i) != -1;
-}
-
 
 // auto-buy helmets
 if (false)

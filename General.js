@@ -128,3 +128,8 @@ function getNearestMonster(args)
     }
     return target;
 }
+
+
+function haveEmptySlot() {
+    return character.items.findIndex(i => !i) != -1;
+}
