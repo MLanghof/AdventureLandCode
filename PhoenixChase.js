@@ -36,6 +36,14 @@ const PHOENIX_SPAWNS = [
         minx: -1358,
         miny: -118,
         maxx: -1010,
+        maxy: 770 //1680
+    },
+    // Duplicated because it covers a y-range much greater than character vision
+    {
+        map: "main",
+        minx: -1358,
+        miny: 770, //-118
+        maxx: -1010,
         maxy: 1680
     },
     // Put halloween before the spider spawn since we might find the phoenix right when we exit from halloween.
