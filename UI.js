@@ -8,6 +8,19 @@ function electronZoom(factor) {
 map_key("DOWN", "snippet", "electronZoom(0.5)");
 map_key("UP", "snippet", "electronZoom(1.0)");
 
+
+function draw_text(text, x, y) {
+    let t = new PIXI.Text(text,{fontFamily : parent.SZ.font, fontSize: 36, fontWeight: "bold", fill : 0x005500, align : 'center'});
+    t.x = x;
+    t.y = y;
+    t.type = "text";
+    t.scale = new PIXI.Point(0.5, 0.5);
+    t.parentGroup = parent.text_layer;
+    t.anchor.set(0.5, 1);
+    parent.drawings.push(t);
+    parent.map.addChild(t);
+}
+
 function bleargh() {
     var b = "";
     b += "<div style='background-color: black; border: 5px solid gray; padding: 14px; font-size: 24px; display: inline-block; max-width: 640px'>";
