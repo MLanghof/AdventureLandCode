@@ -68,3 +68,23 @@ function isTransportingFixed(entity) {
         return true;
     return false;
 }
+
+
+// Buying potions in town
+setInterval(function () {
+    if (character.name == "MKMe")
+        return;
+
+    let neededHpPotCount = 9999 - quantity("hpot1");
+    let neededMpPotCount = 9999 - quantity("mpot1");
+
+    let fancypots = G.maps[character.map].npcs.find((npc) => npc.id == "fancypots");
+    if (fancypots && simple_distance(character, {x: fancypots.position[0], y: fancypots.position[1]}) < 400)
+    {
+        if (neededHpPotCount > 0)
+            buy("hpot1", neededHpPotCount).catch((data) => game_log("Can't buy hpot1: " + data.reason));
+        if (neededMpPotCount > 0)
+            buy("mpot1", neededMpPotCount).catch((data) => game_log("Can't buy mpot1: " + data.reason));
+    }
+}, 10000);
+// Interval is hopefully long enough that no double buy occurs even with extreme lag.
