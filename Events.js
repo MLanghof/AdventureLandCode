@@ -46,6 +46,15 @@ function upgradeHandler(event)
 
 register_handler("q_data", upgradeHandler);
 
+// Log exchange results.
+register_handler("game_log", function(a) {
+
+    if (a.message && a.message.startsWith("Received a ") == true)
+        flog("[Exchange] " + a.message);
+    else if (a.message && a.message.startsWith("Received ") && a.message.color === "gold")
+        flog("[Exchange] " + a.message);
+});
+
 function on_cm(name, data)
 {
     // Taken from safe_log
