@@ -3,6 +3,7 @@ loadCode("General.js")
 .then(p => loadCode("Data.js"))
 .then(p => loadCode("Towns.js"))
 .then(p => loadCode("Upgrading.js"))
+.then(p => loadCode("Exchange.js"))
 .then(p => loadCode("Events.js"))
 .then(function() {
 
