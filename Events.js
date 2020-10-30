@@ -67,8 +67,14 @@ character.on("buy", function (data) {
     flog("[Purchase] Bought " + data.q + " " + data.name + " for " + data.cost + " gold.");
 });
 
-character.on("sbuy", function (data) {
-    flog("[Purchase] Bought " + data.q + " " + data.name + " for " + data.cost + " gold from Ponty.");
+game.on("sbuy", function (data) {
+    let itemDescription = data.item.name;
+    if (data.item.q)
+        itemDescription = data.item.q + " " + itemDescription;
+    if (data.item.level || data.item.level === 0)
+        itemDescription = itemDescription + " +" + data.item.level;
+    game_log(data.name + " bought " + itemDescription + " from Ponty.");
+    flog("[Secondhands] " + data.name + " bought " + itemDescription + " from Ponty.");
 });
 
 game.on("trade", function (data) {
