@@ -130,6 +130,22 @@ function getNearestMonster(args)
 }
 
 
+function getMonstersWhere(f)
+{
+    let ret = [];
+    // Yes, you could filter or map or whatever. If I had type safety I would.
+    for (let id in parent.entities)
+    {
+        let e = parent.entities[id];
+        if (e.type != "monster" || !e.visible || e.dead)
+            continue;
+        if (f(e))
+            ret.push(e);
+    }
+    return ret;
+}
+
+
 function haveEmptySlot() {
     return character.items.findIndex(i => !i) != -1;
 }
