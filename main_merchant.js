@@ -120,7 +120,9 @@ let sell_whitelist = [
     "hpbelt",
     "vitearring",
     "slimestaff",
-    "mushroomstaff"
+    "mushroomstaff",
+    "stinger",
+    "phelmet",
 ];
 
 
