@@ -4,6 +4,9 @@
 
 var ENABLE_PHOENIX_CHASE = true;
 
+if (character.name == "MauranKilom")
+  add_top_button("phoenix_toggle", "PHOENIX", function() { ENABLE_PHOENIX_CHASE = !ENABLE_PHOENIX_CHASE; set_button_color("phoenix_toggle", ENABLE_PHOENIX_CHASE ? "#21B221" : "#B21221"); })
+
 // This is available in G too, but only in ugly array format. TODO: Do the conversion here automatically.
 const PHOENIX_SPAWNS = [
     {
