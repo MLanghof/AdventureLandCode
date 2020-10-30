@@ -127,6 +127,15 @@ function monstersTargetingMe() {
 }
 	
 
+
+let enable3Shot = true;
+if (character.name == "MKRa")
+  add_bottom_button("enable3Shot_toggle", "3SHOT", function() {enable3Shot = !enable3Shot; set_button_color("enable3Shot_toggle", enable3Shot ? "#21B221" : "#B21221"); });
+
+let enable5Shot = false;
+if (character.name == "MKRa")
+  add_bottom_button("enable5Shot_toggle", "5SHOT", function() { enable5Shot = !enable5Shot; set_button_color("enable5Shot_toggle", enable5Shot ? "#21B221" : "#B21221"); });
+
 setInterval(function () {
 
     use_hp_or_mp_fixed();
@@ -169,7 +178,9 @@ setInterval(function () {
     if (can_attack(primary_target))
     {
         set_message("Attacking")
-        if (character.name == "MKRa" && character.mp >= 300 && targets.length > 2)
+        if (character.name == "MKRa" && enable5Shot && character.mp >= 420 && targets.length > 4)
+            use_skill("5shot", targets);
+        else if (character.name == "MKRa" && enable3Shot && character.mp >= 300 && targets.length > 2)
             use_skill("3shot", targets);
         else if (character.name == "MKWa" && character.slots.mainhand.name == "bataxe" && character.mp >= 720 && targetsInCleaveRange() >= 4)
             use_skill("cleave");
