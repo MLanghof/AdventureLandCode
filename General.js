@@ -1,4 +1,5 @@
 
+let PARENT = parent;
 
 const CHARACTER_NAME = parent.character.name;
 const IS_ELECTRON = is_electron();
