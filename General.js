@@ -16,7 +16,7 @@ function flog(message) {
     var now = new Date();
     var full_message = "[" + now.toISOString() + "] " + message;
     var filePath = path.join("D:/Users/Max/Documents/AdventureLand/Logs/", CHARACTER_NAME + ".log");
-    fs.appendFile(filePath, full_message + "\n", (err) => {});
+    fs.appendFileSync(filePath, full_message + "\n", (err) => {});
 };
 
 function flog_alt(message) {
@@ -25,7 +25,7 @@ function flog_alt(message) {
     var now = new Date();
     var full_message = "[" + now.toISOString() + "] " + message;
     var filePath = path.join("D:/Users/Max/Documents/AdventureLand/Logs/", CHARACTER_NAME + ".alt.log");
-    fs.appendFile(filePath, full_message + "\n", (err) => {});
+    fs.appendFileSync(filePath, full_message + "\n", (err) => {});
 };
 
 function chest_log(message) {
@@ -34,7 +34,7 @@ function chest_log(message) {
     var now = new Date();
     var full_message = "[" + now.toISOString() + "] " + message;
     var filePath = path.join("D:/Users/Max/Documents/AdventureLand/Logs/", CHARACTER_NAME + ".chests.log");
-    fs.appendFile(filePath, full_message + "\n", (err) => {});
+    fs.appendFileSync(filePath, full_message + "\n", (err) => {});
 };
 
 function upgrade_log(message) {
@@ -43,7 +43,7 @@ function upgrade_log(message) {
     var now = new Date();
     var full_message = "[" + now.toISOString() + "] " + message;
     var filePath = path.join("D:/Users/Max/Documents/AdventureLand/Logs/", CHARACTER_NAME + ".upgrade.log");
-    fs.appendFile(filePath, full_message + "\n", (err) => {});
+    fs.appendFileSync(filePath, full_message + "\n", (err) => {});
     game_log("U: " + message);
 };
 
