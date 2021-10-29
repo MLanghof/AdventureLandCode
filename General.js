@@ -56,6 +56,21 @@ function sort_by(arr, f) {
     return arr.sort((e1, e2) => (fe1 = f(e1), fe2 = f(e2), (fe1 < fe2 ? -1 : (fe1 > fe2 ? 1 : 0))));
 }
 
+let assertCount = 0;
+
+function assert(condition, ...params) {
+    if (!condition)
+    {
+        let str = "[ASSERT] ASSERTION FAILURE, CHECK CONSOLE";
+        if (assertCount < 10)
+            show_json({"assert": str, "counter": assertCount});
+        game_log(str);
+        flog(str);
+        ++assertCount;
+        console.assert(condition, ...params);
+    }
+}
+
 function use_hp_or_mp_fixed() {
     if (safeties && mssince(last_potion) < min(200, character.ping * 3)) return;
     var used = false;
