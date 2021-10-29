@@ -130,3 +130,8 @@ game.on("shutdown", function (data) {
     flog("[Shutdown] Server shutting down in " + data.seconds + " seconds!");
 });
 
+
+character.on("stacked", function(){
+    move(character.real_x + 5 * Math.random(), character.real_y + 5 * Math.random());
+    flog("[Stacked] Received stacked damage!");
+});
