@@ -15,7 +15,7 @@ function targetForbiddenForCleave(entity)
 
 function couldCleave()
 {
-	return character.name == "MKWa" && character.slots.mainhand.name == "bataxe";
+	return character.name == "MKWa" && character.slots.mainhand.name == "bataxe" && !isPvP();
 }
 
 
