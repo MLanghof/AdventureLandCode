@@ -71,6 +71,12 @@ function assert(condition, ...params) {
     }
 }
 
+
+function isPvP()
+{
+    return (parent.is_pvp || G.maps[character.map].pvp);
+}
+
 function use_hp_or_mp_fixed() {
     if (safeties && mssince(last_potion) < min(200, character.ping * 3)) return;
     var used = false;
