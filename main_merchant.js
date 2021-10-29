@@ -98,6 +98,7 @@ setInterval(function () {
         return;
 
     let targets = Object.values(parent.entities).filter(entity => is_character(entity) && parent.distance(character, entity) < 320 - 1);
+    targets.push(character);
 
     for (let current of targets) {
         current.priority = getMluckPriority(current);
@@ -109,6 +110,8 @@ setInterval(function () {
     // Buff!
     if (sorted_targets.length > 0 && sorted_targets[0].priority > 0)
         use_skill("mluck", sorted_targets[0]);
+    else
+        use_skill("mluck", character);
 }, 1000 / 2);
 
 
